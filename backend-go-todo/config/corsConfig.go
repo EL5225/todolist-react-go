@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	AllowOrigins = "http://localhost:3000"
+	AllowOrigins = "http://localhost:5173"
 	AllowMethods = strings.Join([]string{
 		fiber.MethodGet,
 		fiber.MethodPost,
@@ -16,8 +16,8 @@ var (
 		fiber.MethodDelete,
 		fiber.MethodPatch,
 	}, ",")
-	AllowHeaders     = ""
-	AllowCredentials = false
+	AllowHeaders     = "Origin, Content-Type, Accept, Authorization"
+	AllowCredentials = true
 	ExposeHeaders    = ""
 	MaxAge           = 0
 )

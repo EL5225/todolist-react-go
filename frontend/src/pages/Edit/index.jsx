@@ -1,17 +1,39 @@
-import { lazy, useState, UseState } from "react";
+import { lazy, useEffect, useState, UseState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const ContentLayout = lazy(() => import("../../layouts/ContentLayout"));
 const Navbar = lazy(() => import("../../components/Navbar"));
 
-const Home = () => {
+const Edit = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    getDataId();
+  }, []);
+
+  const getDataId = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/todos/get/${id}`
+      );
+      console.log(response.data.data);
+      const res = await response.data.data;
+      setValue("name", res.name);
+      setValue("note", res.note);
+      setValue("complete", res.complete);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -22,11 +44,11 @@ const Home = () => {
     mode: "onBlur",
   });
 
-  const addTodo = async (data) => {
+  const EditTodo = async (data) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/todos/create",
+      const response = await axios.patch(
+        `http://localhost:8000/api/todos/update/${id}`,
         data,
         {
           headers: {
@@ -49,10 +71,11 @@ const Home = () => {
       <Navbar />
       <ContentLayout>
         <form
-          onSubmit={handleSubmit(addTodo)}
-          className="flex flex-col justify-center items-center gap-4 mb-24 shadow-md p-8"
+          onSubmit={handleSubmit(EditTodo)}
+          className="flex flex-col justify-center items-center gap-4 mb-24 shadow-md p-8 "
         >
           <h1 className="font-semibold text-6xl mb-5">Todo List</h1>
+          <span className="font-bold">Editing</span>
 
           {/* Nama */}
           <div className="flex flex-col">
@@ -61,7 +84,7 @@ const Home = () => {
               type="text"
               id="name"
               placeholder="masukan nama"
-              className={` p-2 rounded-md w-[50vw] hover:border shadow-sm ${
+              className={` p-2 rounded-md w-[50vw] hover:border shadow-sm  ${
                 errors.name
                   ? "bg-red-200 hover:border-red-600"
                   : "bg-slate-100 hover:border-black"
@@ -88,7 +111,7 @@ const Home = () => {
               type="text"
               id="note"
               placeholder="masukan note"
-              className={` p-2 rounded-md w-[50vw] hover:border shadow-sm  ${
+              className={` p-2 rounded-md w-[50vw] hover:border shadow-sm ${
                 errors.note
                   ? "bg-red-200 hover:border-red-600"
                   : "bg-slate-100 hover:border-black"
@@ -109,14 +132,14 @@ const Home = () => {
           </div>
           <button
             type="submit"
-            className={`mt-10 w-[10vw] h-[5vh] rounded-2xl text-md font-semibold bg-blue-500  text-white
+            className={`mt-10 w-[20vw] md:w-[10vw] h-[5vh] rounded-2xl text-md font-semibold bg-green-500  text-white
               ${
                 isLoading
                   ? "cursor-not-allowed bg-blue-200 text-slate-500"
-                  : "hover:bg-blue-700 hover:text-slate-200"
+                  : "hover:bg-green-700 hover:text-slate-200"
               } `}
           >
-            {isLoading ? "Loading..." : "Add"}
+            {isLoading ? "Loading..." : "Edit"}
           </button>
         </form>
       </ContentLayout>
@@ -124,4 +147,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Edit;
