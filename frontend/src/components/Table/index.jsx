@@ -32,13 +32,13 @@ const Table = () => {
 
   return (
     <ContentLayout>
-      <div className="w-[90vw] max-h-[80vh] rounded-lg overflow-y-auto shadow-lg ">
+      <div className="w-[90vw] max-h-[85vh]  md:max-h-[60vh] rounded-lg overflow-y-auto shadow-lg ">
         <div className="overflow-x-auto w-full">
           <table className="text-md font-semibold w-full text-center">
             <thead className="bg-green-500">
               <tr className="tracking-wide ">
-                <th className="p-4">Nama</th>
-                <th className="p-4">Note</th>
+                <th className="p-4">Todo Name</th>
+                <th className="p-4">Description</th>
                 <th className="p-4">Created at</th>
                 <th className="p-4">Action</th>
               </tr>
@@ -49,7 +49,13 @@ const Table = () => {
                   <td className="border-r p-5 border-white">{data.name}</td>
                   <td className="border-r p-5 border-white">{data.note}</td>
                   <td className="border-r p-5 border-white">
-                    {Date(data.created_at)}
+                    {new Date(data.created_at).toLocaleTimeString([], {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </td>
                   <td className="flex p-5 justify-center items-center">
                     <div className="flex justify-between w-52 p-2">
